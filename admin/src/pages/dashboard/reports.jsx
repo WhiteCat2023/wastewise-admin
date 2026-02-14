@@ -16,17 +16,30 @@ import {
 } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
 import { fetchReports } from '../../service/reports/firebase'
+import ReportDetailsModal from '../../components/modal/report-details-modal'
 
 function Reports() {
   const [reports, setReports] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
+  const [selectedReport, setSelectedReport] = useState(null)
+  const [detailsModalOpen, setDetailsModalOpen] = useState(false)
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
     severity: 'success',
   })
   const itemsPerPage = 5
+
+  const handleReportClick = (report) => {
+    setSelectedReport(report)
+    setDetailsModalOpen(true)
+  }
+
+  const handleCloseDetailsModal = () => {
+    setDetailsModalOpen(false)
+    setSelectedReport(null)
+  }
 
   const handleSnackbarClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -140,9 +153,10 @@ function Reports() {
               {paginatedReports.map((report) => (
                 <TableRow
                   key={report.id}
+                  onClick={() => handleReportClick(report)}
                   sx={{
                     borderBottom: '1px solid #f0f0f0',
-                    '&:hover': { bgcolor: '#fafef5' },
+                    '&:hover': { bgcolor: '#fafef5', cursor: 'pointer' },
                   }}
                 >
                   <TableCell sx={{ fontSize: '0.9rem', py: 1, maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis' }}>
@@ -214,6 +228,12 @@ function Reports() {
           {snackbar.message}
         </Alert>
       </Snackbar>
+
+      <ReportDetailsModal
+        open={detailsModalOpen}
+        onClose={handleCloseDetailsModal}
+        report={selectedReport}
+      />
     </Box>
   )
 }
