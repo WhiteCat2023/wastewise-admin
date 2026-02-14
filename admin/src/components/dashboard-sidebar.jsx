@@ -18,14 +18,16 @@ import PeopleIcon from '@mui/icons-material/People'
 import AssignmentIcon from '@mui/icons-material/Assignment'
 import SettingsIcon from '@mui/icons-material/Settings'
 import iconTitle from '../assets/icon_title.png'
-  
+import SportsMotorsportsIcon from '@mui/icons-material/SportsMotorsports';
+import FlagIcon from '@mui/icons-material/Flag';
+
 const DRAWER_WIDTH = 240
 
 const menuItems = [
   { label: 'Dashboard', icon: <SpaceDashboard />, path: '/dashboard' },
-  { label: 'Drivers', icon: <PeopleIcon />, path: '/dashboard/drivers' },
+  { label: 'Drivers', icon: <SportsMotorsportsIcon />, path: '/dashboard/drivers' },
   { label: 'Announcements', icon: <AssignmentIcon />, path: '/dashboard/announcements' },
-  { label: 'Reports', icon: <SettingsIcon />, path: '/dashboard/reports' },
+  { label: 'Reports', icon: <FlagIcon />, path: '/dashboard/reports' },
 ]
 
 function DashboardSidebar({ sidebarOpen, mobileOpen, onMobileClose }) {

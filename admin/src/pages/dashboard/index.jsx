@@ -1,5 +1,6 @@
 import React from 'react'
 import { Box, Typography, Grid, Paper } from '@mui/material'
+import { MyMap } from '../../components/map/map'
 
 function Dashboard() {
   return (
@@ -45,6 +46,8 @@ function Dashboard() {
           No recent activity yet. Check back soon!
         </Typography>
       </Paper>
+
+      <MyMap/>
     </Box>
   )
 }
