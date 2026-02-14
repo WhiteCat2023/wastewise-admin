@@ -36,7 +36,7 @@ function Dashboard() {
   const stats = [
     { title: 'Total Drivers', value: drivers.length.toString(), color: '#4d5f2b' },
     { title: 'Total Reports', value: reports.length.toString(), color: '#3f4f24' },
-    { title: 'Active Reports', value: reports.length.toString(), color: '#4d5f2b' },
+    { title: 'Total Garbage Collected per month', value: "52.5 tons", color: '#4d5f2b' },
     { title: 'This Week', value: reportsThisWeek.length.toString(), color: '#3f4f24' },
   ]
 
@@ -72,7 +72,9 @@ function Dashboard() {
           </Grid>
         ))}
       </Grid>
-
+        <Typography variant="h5" sx={{ mb: 2, fontWeight: 'bold', color: '#4d5f2b' }}>
+        Recent Activity
+      </Typography>
       {/* Recent Activity Tabs */}
       <Paper sx={{ bgcolor: '#f7fbd8', mb: 4 }}>
         <Tabs
@@ -92,8 +94,8 @@ function Dashboard() {
             },
           }}
         >
-          <Tab label="Recent Drivers" />
-          <Tab label="Recent Reports" />
+          <Tab label="Drivers" />
+          <Tab label="Reports" />
         </Tabs>
 
         {/* Recent Drivers Tab */}
