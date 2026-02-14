@@ -1,10 +1,14 @@
 import ForgotPassword from "./pages/forgot-password";
 import Login from "./pages/login";
 import NewPassword from "./pages/new-password";
-import Dashboard from "./pages/dashboard/dashboard";
+import Dashboard from "./pages/dashboard/index";
+import Users from "./pages/dashboard/users";
+import Reports from "./pages/dashboard/reports";
+import Settings from "./pages/dashboard/settings";
 import AuthServiceProvider from "./service/auth/auth.firebase"
 import { useAuthService } from "./service/auth/auth.firebase";
 import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
+import Layout from "./pages/dashboard/layout";
 
 function ProtectedRoute({ children }) {
   const { user, authReady } = useAuthService()
@@ -45,11 +49,20 @@ export default function App() {
     ) },
     { path: "/forgot-password", element: <ForgotPassword /> },
     { path: "/new-password", element: <NewPassword /> },
-    { path: "/dashboard", element: (
-      <ProtectedRoute>
-        <Dashboard />
-      </ProtectedRoute>
-    ) },
+    { 
+      path: "/dashboard", 
+      element: (
+        <ProtectedRoute>
+          <Layout />
+        </ProtectedRoute>
+      ),
+      children: [
+        { index: true, element: <Dashboard /> },
+        { path: "users", element: <Users /> },
+        { path: "reports", element: <Reports /> },
+        { path: "settings", element: <Settings /> },
+      ]
+    },
   ]);
     
   return (
