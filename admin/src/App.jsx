@@ -1,5 +1,6 @@
 import ForgotPassword from "./pages/forgot-password";
 import Login from "./pages/login";
+import NewPassword from "./pages/new-password";
 import Dashboard from "./pages/dashboard/dashboard";
 import AuthServiceProvider from "./service/auth/auth.firebase"
 import { useAuthService } from "./service/auth/auth.firebase";
@@ -43,6 +44,7 @@ export default function App() {
       </PublicRoute>
     ) },
     { path: "/forgot-password", element: <ForgotPassword /> },
+    { path: "/new-password", element: <NewPassword /> },
     { path: "/dashboard", element: (
       <ProtectedRoute>
         <Dashboard />

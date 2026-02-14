@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth'
+import { confirmPasswordReset, createUserWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signOut } from 'firebase/auth'
 import { auth } from '../config/firebase'
 
 
@@ -47,10 +47,23 @@ function AuthServiceProvider({children}) {
         }
     }
 
-    const forgotPassword = async (email) => {
+    const forgotPassword = async (email, redirectUrl) => {
         setLoading(true)
         try {
-            await sendPasswordResetEmail(auth, email)
+            const url = redirectUrl || `${window.location.origin}/new-password`
+            await sendPasswordResetEmail(auth, email, {
+                url,
+                handleCodeInApp: true,
+            })
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const confirmResetPassword = async (actionCode, newPassword) => {
+        setLoading(true)
+        try {
+            await confirmPasswordReset(auth, actionCode, newPassword)
         } finally {
             setLoading(false)
         }
@@ -63,6 +76,8 @@ function AuthServiceProvider({children}) {
         loading,
         user,
         authReady,
+        forgotPassword,
+        confirmResetPassword,
     }), [loading, user, authReady])
 
     return (
