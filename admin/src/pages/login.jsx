@@ -12,6 +12,8 @@ import {
 } from '@mui/material'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import Image from 'mui-image'
+import { useNavigate } from 'react-router-dom'
+import { useAuthService } from '../service/auth/auth.firebase'
 
 import iconTitle from '../assets/icon_title.png'
 
@@ -29,7 +31,10 @@ function Login() {
     const [showPassword, setShowPassword] = useState(false)
 
     const isEmailValid = (value) => /\S+@\S+\.\S+/.test(value)
-    const isPasswordAlphanumeric = (value) => /^[a-zA-Z0-9]+$/.test(value)
+    const isPasswordAlphanumeric = (value) => /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]+$/.test(value)
+
+    const auth = useAuthService()
+    const navigate = useNavigate()
 
     const handleChange = (e) => {
       setInput(prev => ({
@@ -38,7 +43,7 @@ function Login() {
       }))
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
       e?.preventDefault();
       setEmailTouched(true)
       setPasswordTouched(true)
@@ -50,6 +55,8 @@ function Login() {
           throw new Error('Password must be alphanumeric')
         }
         setIsSubmitting(true)
+        await auth.login(input.email, input.password)
+        navigate('/dashboard')
         console.log(input);
       } catch (error) {
         console.error(error)
@@ -64,7 +71,7 @@ function Login() {
         passwordErrors.push('Password is required')
       }
       if (input.password && !isPasswordAlphanumeric(input.password)) {
-        passwordErrors.push('Password must be alphanumeric')
+        passwordErrors.push('Password must include letters, numbers, and a special character (!@#$%^&*)')
       }
     }
 
