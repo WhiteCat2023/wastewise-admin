@@ -11,6 +11,7 @@ import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom"
 import DashboardLayout from "./layout/dashboard-layout";
 import ProtectedRoute from "./route/protected-route";
 import PublicRoute from "./route/public-route";
+import Schedules from "./pages/dashboard/schedules";
 
 export default function App() {
   
@@ -35,6 +36,7 @@ export default function App() {
         { path: "drivers", element: <Users /> },
         { path: "announcements", element: <Announcements /> },
         { path: "reports", element: <Reports /> },
+        { path: "schedules", element: <Schedules /> },
       ]
     },
   ]);

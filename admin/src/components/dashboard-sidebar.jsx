@@ -20,6 +20,7 @@ import SettingsIcon from '@mui/icons-material/Settings'
 import iconTitle from '../assets/icon_title.png'
 import SportsMotorsportsIcon from '@mui/icons-material/SportsMotorsports';
 import FlagIcon from '@mui/icons-material/Flag';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 const DRAWER_WIDTH = 240
 
@@ -28,6 +29,7 @@ const menuItems = [
   { label: 'Drivers', icon: <SportsMotorsportsIcon />, path: '/dashboard/drivers' },
   { label: 'Announcements', icon: <AssignmentIcon />, path: '/dashboard/announcements' },
   { label: 'Reports', icon: <FlagIcon />, path: '/dashboard/reports' },
+  { label: 'Schedules', icon: <CalendarMonthIcon/>, path: '/dashboard/schedules' },
 ]
 
 function DashboardSidebar({ sidebarOpen, mobileOpen, onMobileClose }) {
