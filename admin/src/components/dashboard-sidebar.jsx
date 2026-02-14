@@ -23,7 +23,7 @@ const DRAWER_WIDTH = 240
 
 const menuItems = [
   { label: 'Dashboard', icon: <SpaceDashboard />, path: '/dashboard' },
-  { label: 'Users', icon: <PeopleIcon />, path: '/dashboard/users' },
+  { label: 'Drivers', icon: <PeopleIcon />, path: '/dashboard/drivers' },
   { label: 'Announcements', icon: <AssignmentIcon />, path: '/dashboard/announcements' },
   { label: 'Settings', icon: <SettingsIcon />, path: '/dashboard/settings' },
 ]

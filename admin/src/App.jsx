@@ -32,7 +32,7 @@ export default function App() {
       ),
       children: [
         { index: true, element: <Dashboard /> },
-        { path: "users", element: <Users /> },
+        { path: "drivers", element: <Users /> },
         { path: "announcements", element: <Announcements /> },
         { path: "settings", element: <Settings /> },
       ]
