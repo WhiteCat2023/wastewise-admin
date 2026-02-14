@@ -3,6 +3,9 @@ import {
   collection,
   serverTimestamp,
   onSnapshot,
+  doc,
+  deleteDoc,
+  updateDoc,
 } from 'firebase/firestore'
 import { db } from '../config/firebase'
 
@@ -48,4 +51,31 @@ export const fetchAnnouncements = (callback) => {
       console.error('Error fetching announcements:', error)
     }
   )
+}
+
+export const updateAnnouncement = async (
+  id,
+  { title, message, createdBy, nextPickupDate, scheduleDay, type }
+) => {
+  if (!title || !message) {
+    throw new Error('Title and message are required.')
+  }
+
+  const payload = {
+    title: title.trim(),
+    message: message.trim(),
+    nextPickup: nextPickupDate || null,
+    schedule: scheduleDay || null,
+    type: type || 'general',
+    updatedAt: serverTimestamp(),
+  }
+
+  const docRef = doc(db, ANNOUNCEMENTS_COLLECTION, id)
+  await updateDoc(docRef, payload)
+  return { id, ...payload }
+}
+
+export const deleteAnnouncement = async (id) => {
+  const docRef = doc(db, ANNOUNCEMENTS_COLLECTION, id)
+  await deleteDoc(docRef)
 }

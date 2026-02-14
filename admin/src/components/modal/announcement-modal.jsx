@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Dialog,
   DialogTitle,
@@ -17,9 +17,9 @@ import {
 } from '@mui/material'
 import { isBlankInput } from '../../utils/input-validation'
 import { useAuthService } from '../../service/auth/auth.firebase'
-import { submitAnnouncement } from '../../service/announcement/firebase'
+import { submitAnnouncement, updateAnnouncement } from '../../service/announcement/firebase'
 
-function AnnouncementModal({ open, onClose}) {
+function AnnouncementModal({ open, onClose, editingAnnouncement }) {
   const [title, setTitle] = useState('')
   const [message, setMessage] = useState('')
   const [type, setType] = useState('')
@@ -32,6 +32,22 @@ function AnnouncementModal({ open, onClose}) {
     severity: 'success',
   })
   const { user } = useAuthService();
+
+  useEffect(() => {
+    if (editingAnnouncement && open) {
+      setTitle(editingAnnouncement.title || '')
+      setMessage(editingAnnouncement.message || '')
+      setType(editingAnnouncement.type || '')
+      setNextPickupDate(editingAnnouncement.nextPickup || '')
+      setScheduleDay(editingAnnouncement.schedule || '')
+    } else if (!open) {
+      setTitle('')
+      setMessage('')
+      setType('')
+      setNextPickupDate('')
+      setScheduleDay('')
+    }
+  }, [open, editingAnnouncement])
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -50,28 +66,44 @@ function AnnouncementModal({ open, onClose}) {
       return
     }
     try {
-      await submitAnnouncement({
-        title: title.trim(),
-        message: message.trim(),
-        type: type,
-        nextPickupDate: formatDateToMonthDay(nextPickupDate),
-        scheduleDay: scheduleDay || null,
-        createdBy: user?.email || null,
-      })
+      if (editingAnnouncement) {
+        await updateAnnouncement(editingAnnouncement.id, {
+          title: title.trim(),
+          message: message.trim(),
+          type: type,
+          nextPickupDate: formatDateToMonthDay(nextPickupDate),
+          scheduleDay: scheduleDay || null,
+          createdBy: user?.email || null,
+        })
+        setSnackbar({
+          open: true,
+          message: 'Announcement updated successfully.',
+          severity: 'success',
+        })
+      } else {
+        await submitAnnouncement({
+          title: title.trim(),
+          message: message.trim(),
+          type: type,
+          nextPickupDate: formatDateToMonthDay(nextPickupDate),
+          scheduleDay: scheduleDay || null,
+          createdBy: user?.email || null,
+        })
+        setSnackbar({
+          open: true,
+          message: 'Announcement published successfully.',
+          severity: 'success',
+        })
+      }
       setTitle('')
       setMessage('')
       setNextPickupDate('')
       setScheduleDay('')
       onClose?.()
-      setSnackbar({
-        open: true,
-        message: 'Announcement published successfully.',
-        severity: 'success',
-      })
     } catch (error) {
       setSnackbar({
         open: true,
-        message: 'Error publishing announcement: ' + error.message,
+        message: 'Error: ' + error.message,
         severity: 'error',
       })
     } finally {
@@ -101,7 +133,7 @@ function AnnouncementModal({ open, onClose}) {
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <DialogTitle sx={{ color: '#4d5f2b', fontWeight: 'bold' }}>
-        Create Announcement
+        {editingAnnouncement ? 'Edit Announcement' : 'Create Announcement'}
       </DialogTitle>
       <DialogContent>
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
@@ -179,7 +211,7 @@ function AnnouncementModal({ open, onClose}) {
           disabled={loading}
           sx={{ bgcolor: '#4d5f2b', '&:hover': { bgcolor: '#3f4f24' }, '&:disabled': { bgcolor: '#a0ab7e' } }}
         >
-          Publish
+          {editingAnnouncement ? 'Update' : 'Publish'}
         </Button>
       </DialogActions>
       <Snackbar
