@@ -14,7 +14,7 @@ import MenuIcon from '@mui/icons-material/Menu'
 import LogoutIcon from '@mui/icons-material/Logout'
 import { useNavigate, Outlet } from 'react-router-dom'
 import { useAuthService } from '../service/auth/auth.firebase'
-import DashboardSidebar from '../components/DashboardSidebar'
+import DashboardSidebar from '../components/dashboard-sidebar'
 
 const DRAWER_WIDTH = 240
 
@@ -53,58 +53,6 @@ function DashboardLayout() {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      {/* AppBar */}
-      <AppBar
-        position="fixed"
-        sx={{
-          width: { xs: '100%', sm: `calc(100% - ${sidebarOpen ? DRAWER_WIDTH : 0}px)` },
-          ml: { xs: 0, sm: sidebarOpen ? `${DRAWER_WIDTH}px` : 0 },
-          bgcolor: '#4d5f2b',
-          transition: 'all 0.3s ease',
-        }}
-      >
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: 'none' } }}
-          >
-            <MenuIcon />
-          </IconButton>
-
-          <Box sx={{ flex: 1 }} />
-
-          {/* User Menu */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Avatar
-              sx={{
-                bgcolor: '#f7fbd8',
-                color: '#4d5f2b',
-                cursor: 'pointer',
-                fontWeight: 'bold',
-              }}
-              onClick={handleMenuOpen}
-            >
-              {user?.email?.[0]?.toUpperCase() || 'A'}
-            </Avatar>
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleMenuClose}
-            >
-              <MenuItem disabled>
-                <Typography variant="body2">{user?.email}</Typography>
-              </MenuItem>
-              <Divider />
-              <MenuItem onClick={handleLogout}>
-                <LogoutIcon sx={{ mr: 1 }} />
-                Logout
-              </MenuItem>
-            </Menu>
-          </Box>
-        </Toolbar>
-      </AppBar>
 
       {/* Sidebar - Desktop */}
       <DashboardSidebar 
@@ -119,7 +67,7 @@ function DashboardLayout() {
         sx={{
           flex: 1,
           p: 3,
-          mt: '64px',
+          // mt: '64px',
           bgcolor: '#f9fbf5',
           minHeight: '100vh',
           transition: 'margin 0.3s ease',

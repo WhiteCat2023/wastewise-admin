@@ -2,41 +2,15 @@ import ForgotPassword from "./pages/forgot-password";
 import Login from "./pages/login";
 import NewPassword from "./pages/new-password";
 import Dashboard from "./pages/dashboard/index";
-import Users from "./pages/dashboard/users";
-import Reports from "./pages/dashboard/reports";
+import Users from "./pages/dashboard/drivers";
+import Announcements from "./pages/dashboard/announcements";
 import Settings from "./pages/dashboard/settings";
 import AuthServiceProvider from "./service/auth/auth.firebase"
 import { useAuthService } from "./service/auth/auth.firebase";
 import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
-import Layout from "./pages/dashboard/layout";
-
-function ProtectedRoute({ children }) {
-  const { user, authReady } = useAuthService()
-
-  if (!authReady) {
-    return null
-  }
-
-  if (!user) {
-    return <Navigate to="/login" replace />
-  }
-
-  return children
-}
-
-function PublicRoute({ children }) {
-  const { user, authReady } = useAuthService()
-
-  if (!authReady) {
-    return null
-  }
-
-  if (user) {
-    return <Navigate to="/dashboard" replace />
-  }
-
-  return children
-}
+import DashboardLayout from "./layout/dashboard-layout";
+import ProtectedRoute from "./route/protected-route";
+import PublicRoute from "./route/public-route";
 
 export default function App() {
   
@@ -53,13 +27,13 @@ export default function App() {
       path: "/dashboard", 
       element: (
         <ProtectedRoute>
-          <Layout />
+          <DashboardLayout />
         </ProtectedRoute>
       ),
       children: [
         { index: true, element: <Dashboard /> },
         { path: "users", element: <Users /> },
-        { path: "reports", element: <Reports /> },
+        { path: "announcements", element: <Announcements /> },
         { path: "settings", element: <Settings /> },
       ]
     },

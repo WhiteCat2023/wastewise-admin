@@ -17,13 +17,14 @@ import { SpaceDashboard } from '@mui/icons-material'
 import PeopleIcon from '@mui/icons-material/People'
 import AssignmentIcon from '@mui/icons-material/Assignment'
 import SettingsIcon from '@mui/icons-material/Settings'
-
+import iconTitle from '../assets/icon_title.png'
+  
 const DRAWER_WIDTH = 240
 
 const menuItems = [
   { label: 'Dashboard', icon: <SpaceDashboard />, path: '/dashboard' },
   { label: 'Users', icon: <PeopleIcon />, path: '/dashboard/users' },
-  { label: 'Reports', icon: <AssignmentIcon />, path: '/dashboard/reports' },
+  { label: 'Announcements', icon: <AssignmentIcon />, path: '/dashboard/announcements' },
   { label: 'Settings', icon: <SettingsIcon />, path: '/dashboard/settings' },
 ]
 
@@ -46,15 +47,26 @@ function DashboardSidebar({ sidebarOpen, mobileOpen, onMobileClose }) {
   }
 
   const drawerContent = (
-    <Box sx={{ bgcolor: '#4d5f2b', display: 'flex', flexDirection: 'column', height: '100%' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       {/* Sidebar Header */}
-      <Box sx={{ p: 2, bgcolor: '#4d5f2b', color: 'white' }}>
+      {/* <Box sx={{ p: 2, bgcolor: '#4d5f2b', color: 'white' }}>
         <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
           WasteWise
         </Typography>
-        <Typography variant="caption">Admin Panel</Typography>
+        <img src={iconTitle} alt="WasteWise Logo" style={{ width: 40, height: 40, marginBottom: 8 }} />
+        <Typography variant="caption">Welcome back, Admin!</Typography>
+      </Box> */}
+      <Box sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        p: 2,
+        mt: 2,
+      }}>
+        <img src={iconTitle} alt="WasteWise Logo" style={{ width: 100, marginBottom: 8 }} />
+         <Typography variant="caption">Welcome back, Admin!</Typography>
       </Box>
-
       {/* Navigation Menu */}
       <List sx={{ flex: 1, pt: 2 }}>
         {menuItems.map((item) => (
@@ -63,16 +75,19 @@ function DashboardSidebar({ sidebarOpen, mobileOpen, onMobileClose }) {
               onClick={() => handleNavigation(item.path)}
               sx={{
                 '&:hover': {
-                  bgcolor: '#f7fbd8',
+                  bgcolor: '#4d5f2b',
+                  color: 'white',
                 },
                 '&.active': {
                   bgcolor: '#f3f7cf',
-                  borderLeft: '4px solid #4d5f2b',
+                  borderLeft: '4px solid #35421e',
                   color: '#4d5f2b',
                   fontWeight: 'bold',
                 },
                 borderRadius: 2,
-                m: 1,
+                mx: 2,
+                my: 1,
+                paddingLeft: 4,
               }}
             >
               <ListItemIcon sx={{ minWidth: 40, color: 'inherit' }}>
@@ -89,22 +104,23 @@ function DashboardSidebar({ sidebarOpen, mobileOpen, onMobileClose }) {
         ))}
       </List>
 
-      <Divider />
 
       {/* Logout Button */}
-      <Box sx={{ p: 2 }}>
+      <Box sx={{ p: 2, }}>
         <ListItemButton
           onClick={handleLogout}
           sx={{
-            borderRadius: 1,
+            borderRadius: 2,
             bgcolor: '#f3f7cf',
             '&:hover': {
               bgcolor: '#d32f2f',
               color: 'white',
             },
-            color: '#d32f2f',
+            color: '#000',
             fontWeight: 'bold',
-            justifyContent: 'center',
+            paddingLeft: 5,
+            // justifyContent: 'center',
+            // paddingLeft: -20
           }}
         >
           <LogoutIcon sx={{ mr: 1 }} />
