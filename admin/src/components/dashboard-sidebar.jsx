@@ -25,7 +25,7 @@ const menuItems = [
   { label: 'Dashboard', icon: <SpaceDashboard />, path: '/dashboard' },
   { label: 'Drivers', icon: <PeopleIcon />, path: '/dashboard/drivers' },
   { label: 'Announcements', icon: <AssignmentIcon />, path: '/dashboard/announcements' },
-  { label: 'Settings', icon: <SettingsIcon />, path: '/dashboard/settings' },
+  { label: 'Reports', icon: <SettingsIcon />, path: '/dashboard/reports' },
 ]
 
 function DashboardSidebar({ sidebarOpen, mobileOpen, onMobileClose }) {

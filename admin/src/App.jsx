@@ -4,7 +4,7 @@ import NewPassword from "./pages/new-password";
 import Dashboard from "./pages/dashboard/index";
 import Users from "./pages/dashboard/drivers";
 import Announcements from "./pages/dashboard/announcements";
-import Settings from "./pages/dashboard/settings";
+import Reports from "./pages/dashboard/reports";
 import AuthServiceProvider from "./service/auth/auth.firebase"
 import { useAuthService } from "./service/auth/auth.firebase";
 import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
@@ -34,7 +34,7 @@ export default function App() {
         { index: true, element: <Dashboard /> },
         { path: "drivers", element: <Users /> },
         { path: "announcements", element: <Announcements /> },
-        { path: "settings", element: <Settings /> },
+        { path: "reports", element: <Reports /> },
       ]
     },
   ]);
