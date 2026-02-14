@@ -11,13 +11,16 @@ import {
   TableRow,
   Paper,
   IconButton,
-  Tooltip,
   Snackbar,
   Alert,
+  TextField,
+  Chip,
+  Pagination,
 } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
+import SearchIcon from '@mui/icons-material/Search'
 import AnnouncementModal from '../../components/modal/announcement-modal'
 import ConfirmationDialog from '../../components/dialog/ConfirmationDialog'
 import { fetchAnnouncements, deleteAnnouncement } from '../../service/announcement/firebase'
@@ -28,11 +31,14 @@ function Announcements() {
   const [editingAnnouncement, setEditingAnnouncement] = useState(null)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [deleteLoading, setDeleteLoading] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
     severity: 'success',
   })
+  const itemsPerPage = 5
 
   const handleOpen = () => {
     setEditingAnnouncement(null)
@@ -88,6 +94,24 @@ function Announcements() {
     fetchAnnouncements(setAnnouncements)
   }, [])
 
+  const filteredAnnouncements = announcements.filter((announcement) => {
+    const searchLower = searchQuery.toLowerCase()
+    return (
+      announcement.title.toLowerCase().includes(searchLower) ||
+      announcement.type.toLowerCase().includes(searchLower) ||
+      (announcement.schedule && announcement.schedule.toLowerCase().includes(searchLower))
+    )
+  })
+
+  const totalPages = Math.ceil(filteredAnnouncements.length / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const paginatedAnnouncements = filteredAnnouncements.slice(startIndex, endIndex)
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchQuery])
+
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
@@ -110,85 +134,139 @@ function Announcements() {
         </Button>
       </Box>
 
+      <Box sx={{ mb: 3 }}>
+        <TextField
+          placeholder="Search by title, type, or schedule..."
+          value={searchQuery}
+          onChange={(event) => setSearchQuery(event.target.value)}
+          fullWidth
+          size="small"
+          InputProps={{
+            startAdornment: <SearchIcon sx={{ mr: 1, color: '#4d5f2b', fontSize: '20px' }} />,
+          }}
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              bgcolor: 'white',
+              borderRadius: 1,
+              '& fieldset': {
+                borderColor: '#e0e0e0',
+              },
+              '&:hover fieldset': {
+                borderColor: '#4d5f2b',
+              },
+              '&.Mui-focused fieldset': {
+                borderColor: '#4d5f2b',
+                borderWidth: 1,
+              },
+            },
+            '& .MuiOutlinedInput-input': {
+              py: 1,
+              fontSize: '0.95rem',
+            },
+          }}
+        />
+      </Box>
+
       {announcements.length === 0 ? (
         <Paper sx={{ p: 4, bgcolor: '#f7fbd8', textAlign: 'center' }}>
           <Typography variant="body1" sx={{ color: '#666' }}>
             No announcements yet. Click "Create Announcement" to add one!
           </Typography>
         </Paper>
+      ) : filteredAnnouncements.length === 0 ? (
+        <Paper sx={{ p: 4, bgcolor: '#f7fbd8', textAlign: 'center' }}>
+          <Typography variant="body1" sx={{ color: '#666' }}>
+            No announcements match your search. Try a different query!
+          </Typography>
+        </Paper>
       ) : (
-        <TableContainer component={Paper} sx={{ boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}>
-          <Table>
+        <TableContainer sx={{ bgcolor: 'white', borderRadius: 1 }}>
+          <Table size="small">
             <TableHead>
-              <TableRow sx={{ bgcolor: '#4d5f2b' }}>
-                <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Title</TableCell>
-                <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Type</TableCell>
-                <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Message</TableCell>
-                <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Next Pickup</TableCell>
-                <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Schedule</TableCell>
-                <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Created By</TableCell>
-                <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Actions</TableCell>
+              <TableRow sx={{ bgcolor: '#f7fbd8', borderBottom: '2px solid #4d5f2b' }}>
+                <TableCell sx={{ fontWeight: 600, color: '#3f4f24', fontSize: '0.9rem' }}>Title</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: '#3f4f24', fontSize: '0.9rem' }}>Type</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: '#3f4f24', fontSize: '0.9rem' }}>Message</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: '#3f4f24', fontSize: '0.9rem' }}>Next Pickup</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: '#3f4f24', fontSize: '0.9rem' }}>Schedule</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: '#3f4f24', fontSize: '0.9rem' }}>Created By</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: '#3f4f24', fontSize: '0.9rem' }}>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {announcements.map((announcement, index) => (
+              {paginatedAnnouncements.map((announcement) => (
                 <TableRow
                   key={announcement.id}
                   sx={{
-                    bgcolor: index % 2 === 0 ? '#f9fbf5' : 'white',
-                    '&:hover': { bgcolor: '#f3f7cf' },
+                    borderBottom: '1px solid #f0f0f0',
+                    '&:hover': { bgcolor: '#fafef5' },
                   }}
                 >
-                  <TableCell sx={{ fontWeight: 'bold', color: '#4d5f2b' }}>
-                    {announcement.title}
-                  </TableCell>
-                  <TableCell>
-                    <Box
+                  <TableCell sx={{ fontSize: '0.9rem', py: 1 }}>{announcement.title}</TableCell>
+                  <TableCell sx={{ fontSize: '0.9rem', py: 1 }}>
+                    <Chip
+                      label={announcement.type}
+                      size="small"
                       sx={{
-                        display: 'inline-block',
-                        bgcolor: '#f0f0f0',
-                        px: 2,
-                        py: 0.5,
-                        borderRadius: 1,
-                        fontSize: '0.75rem',
-                        fontWeight: 'bold',
-                        color: '#666',
+                        bgcolor: '#f3f7cf',
+                        color: '#3f4f24',
+                        fontWeight: 500,
+                        fontSize: '0.8rem',
                       }}
-                    >
-                      {announcement.type}
-                    </Box>
+                    />
                   </TableCell>
-                  <TableCell sx={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  <TableCell sx={{ fontSize: '0.9rem', py: 1, maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {announcement.message.substring(0, 50)}...
                   </TableCell>
-                  <TableCell>{announcement.nextPickup || '-'}</TableCell>
-                  <TableCell>{announcement.schedule || '-'}</TableCell>
-                  <TableCell>{announcement.createdBy || '-'}</TableCell>
-                  <TableCell>
-                    <Tooltip title="Edit">
+                  <TableCell sx={{ fontSize: '0.9rem', py: 1 }}>{announcement.nextPickup || '-'}</TableCell>
+                  <TableCell sx={{ fontSize: '0.9rem', py: 1 }}>{announcement.schedule || '-'}</TableCell>
+                  <TableCell sx={{ fontSize: '0.9rem', py: 1 }}>{announcement.createdBy || '-'}</TableCell>
+                  <TableCell sx={{ py: 1 }}>
+                    <Box sx={{ display: 'flex', gap: 0.5 }}>
                       <IconButton
                         size="small"
                         onClick={() => handleEdit(announcement)}
-                        sx={{ color: '#4d5f2b', mr: 1 }}
+                        sx={{ color: '#4d5f2b' }}
                       >
-                        <EditIcon />
+                        <EditIcon fontSize="small" />
                       </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Delete">
                       <IconButton
                         size="small"
                         onClick={() => handleDeleteClick(announcement)}
                         sx={{ color: '#d32f2f' }}
                       >
-                        <DeleteIcon />
+                        <DeleteIcon fontSize="small" />
                       </IconButton>
-                    </Tooltip>
+                    </Box>
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
+      )}
+
+      {filteredAnnouncements.length > 0 && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+          <Pagination
+            count={totalPages}
+            page={currentPage}
+            onChange={(e, page) => setCurrentPage(page)}
+            color="primary"
+            sx={{
+              '& .MuiPaginationItem-root': {
+                color: '#4d5f2b',
+              },
+              '& .MuiPaginationItem-page.Mui-selected': {
+                bgcolor: '#4d5f2b',
+                color: 'white',
+              },
+              '& .MuiPaginationItem-page.Mui-selected:hover': {
+                bgcolor: '#3f4f24',
+              },
+            }}
+          />
+        </Box>
       )}
 
       <AnnouncementModal
