@@ -1,31 +1,37 @@
-import { useContext, useState } from 'react'
-import { signInWithEmailAndPassword } from 'firebase/auth'
+import { createContext, useContext, useMemo, useState } from 'react'
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../config/firebase'
 
 
-const AuthService = useContext()
+const AuthService = createContext(null)
 
 function AuthServiceProvider({children}) {
 
-    const [loading, isLoading] = useState(false)
+    const [loading, setLoading] = useState(false)
 
     const login = async (email, password) => {
-        isLoading(true)
-        await signInWithEmailAndPassword(auth, email, password)
-        isLoading(false)
+        setLoading(true)
+        try {
+            await signInWithEmailAndPassword(auth, email, password)
+        } finally {
+            setLoading(false)
+        }
     }
 
     const signUp = async (email, password) => {
-        isLoading(true)
-        await createUserWithEmailAndPassword(auth, email, password)
-        isLoading(false)
+        setLoading(true)
+        try {
+            await createUserWithEmailAndPassword(auth, email, password)
+        } finally {
+            setLoading(false)
+        }
     }
 
-    const authContext = {
+    const authContext = useMemo(() => ({
         login,
         signUp,
         loading,
-    }
+    }), [loading])
 
     return (
         <AuthService.Provider value={authContext}>
@@ -35,3 +41,11 @@ function AuthServiceProvider({children}) {
 }
 
 export default AuthServiceProvider
+
+export function useAuthService() {
+    const context = useContext(AuthService)
+    if (!context) {
+        throw new Error('useAuthService must be used within AuthServiceProvider')
+    }
+    return context
+}

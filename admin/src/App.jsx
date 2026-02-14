@@ -1,11 +1,14 @@
+import ForgotPassword from "./pages/forgot-password";
 import Login from "./pages/login";
 import AuthServiceProvider from "./service/auth/auth.firebase"
-import {createBrowserRouter, RouterProvider} from "react-router-dom"
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 
 export default function App() {
   
   const router = createBrowserRouter([
-    {path: "/", element: <Login/>}
+    { path: "/", element: <Navigate to="/login" replace /> },
+    { path: "/login", element: <Login /> },
+    { path: "/forgot-password", element: <ForgotPassword /> },
   ]);
     
   return (
