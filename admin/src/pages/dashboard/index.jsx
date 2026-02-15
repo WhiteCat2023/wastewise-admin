@@ -3,6 +3,7 @@ import { Box, Typography, Grid, Tabs, Tab, Paper, Table, TableBody, TableCell, T
 import { MyMap } from '../../components/map/map'
 import { fetchDrivers } from '../../service/driver/firebase'
 import { fetchReports, fetchReportsThisWeek } from '../../service/reports/firebase'
+import NotificationDropdown from '../../components/notification-dropdown'
 
 function Dashboard() {
   const [drivers, setDrivers] = useState([])
@@ -46,9 +47,12 @@ function Dashboard() {
 
   return (
     <Box>
-      <Typography variant="h4" sx={{ mb: 4, fontWeight: 'bold', color: '#4d5f2b' }}>
-        Dashboard
-      </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+        <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#4d5f2b' }}>
+          Dashboard
+        </Typography>
+        <NotificationDropdown />
+      </Box>
 
       {/* Stats Grid */}
       <Grid container spacing={2} sx={{ mb: 4, width: '100%' }}>
